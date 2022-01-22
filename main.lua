@@ -16,6 +16,7 @@ function love.load()
 
     sprites.player = love.graphics.newImage('sprites/baby-running.png')
     local animGrid = anim8.newGrid(228, 278, sprites.player:getWidth(), sprites.player:getHeight())
+
     animations.walking = anim8.newAnimation(animGrid('1-4', 4), 0.3)
     animations.idle = anim8.newAnimation(animGrid('1-1', 4), 0.3)
 

@@ -2,9 +2,11 @@ player = world:newRectangleCollider(360, 100, 40, 40, nil)
 player.speed = 200
 player.direction = 1
 player.jumping = false
-player.animation = animations.walking
+player.animation = animations.idle
 
 function playerUpdate(dt)
+    player.animation = animations.idle
+
     if player.body then
         local colliders = world:queryRectangleArea(
             player:getX() - 20,
@@ -19,11 +21,13 @@ function playerUpdate(dt)
         if love.keyboard.isDown('left') then
             player:setX(px - player.speed * dt)
             player.direction = -1
+            player.animation = animations.walking
         end
    
         if love.keyboard.isDown('right') then
             player:setX(px + player.speed * dt)
             player.direction = 1
+            player.animation = animations.walking
         end
 
         if #colliders > 0 then
