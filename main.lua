@@ -1,6 +1,7 @@
 wf = require('libs/windfield/windfield')
 anim8 = require('libs/anim8/anim8')
 sti = require('libs/Simple-Tiled-Implementation/sti')
+camera = require('libs/hump/camera')
 
 sprites = {}
 animations = {}
@@ -14,6 +15,8 @@ function love.load()
     world = wf.newWorld(0, 800, false)
     world:setQueryDebugDrawing(true)
     world:addCollisionClass('platform')
+
+    cam = camera()
 
     sprites.player = love.graphics.newImage('sprites/baby-running.png')
     local animGrid = anim8.newGrid(228, 278, sprites.player:getWidth(), sprites.player:getHeight())
@@ -31,15 +34,20 @@ function love.load()
 end
 
 function love.draw()
+    cam:attach()
     world:draw()
     gameMap:drawLayer(gameMap.layers['Tile Layer 1'])
     drawPlayer()
+    cam:detach()
 end
 
 function love.update(dt)
     world:update(dt)
     gameMap:update(dt)
     playerUpdate(dt)
+
+    local px, py = player:getPosition()
+    cam:lookAt(px, love.graphics.getHeight() / 2)
 end
 
 function love.keypressed(key)
@@ -49,7 +57,7 @@ function love.keypressed(key)
 
     if key == 'up' then
         if not player.jumping then
-            player:applyLinearImpulse(0, -1500)
+            player:applyLinearImpulse(0, -3000)
         end
     end
 end

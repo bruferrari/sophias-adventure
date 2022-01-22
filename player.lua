@@ -1,4 +1,4 @@
-player = world:newRectangleCollider(360, 100, 40, 40, nil)
+player = world:newRectangleCollider(360, 100, 50, 60, nil)
 player.speed = 200
 player.direction = 1
 player.jumping = false
@@ -10,7 +10,7 @@ function playerUpdate(dt)
     if player.body then
         local colliders = world:queryRectangleArea(
             player:getX() - 20,
-            player:getY() + 20,
+            player:getY() + 30,
             40,
             2,
             {'platform'}
@@ -47,5 +47,5 @@ end
 
 function drawPlayer()
     local px, py = player:getPosition()
-    player.animation:draw(sprites.player, px, py, nil, 0.25 * player.direction, 0.25, 100, 190)
+    player.animation:draw(sprites.player, px, py, nil, 0.25 * player.direction, 0.25, 100, 150)
 end
