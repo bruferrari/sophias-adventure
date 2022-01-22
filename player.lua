@@ -23,11 +23,15 @@ function playerUpdate(dt)
             player.direction = -1
             player.animation = animations.walking
         end
-   
+
         if love.keyboard.isDown('right') then
             player:setX(px + player.speed * dt)
             player.direction = 1
             player.animation = animations.walking
+        end
+
+        if love.keyboard.isDown('space') then
+            player.animation = animations.happy
         end
 
         if #colliders > 0 then
