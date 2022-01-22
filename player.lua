@@ -2,6 +2,7 @@ player = world:newRectangleCollider(360, 100, 40, 40, nil)
 player.speed = 200
 player.direction = 1
 player.jumping = false
+player.animation = animations.walking
 
 function playerUpdate(dt)
     if player.body then
@@ -31,4 +32,11 @@ function playerUpdate(dt)
             player.jumping = true
         end
     end
+
+    player.animation:update(dt)
+end
+
+function drawPlayer()
+    local px, py = player:getPosition()
+    player.animation:draw(sprites.player, px, py, nil, 0.25 * player.direction, 0.25, 100, 190)
 end
