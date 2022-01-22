@@ -34,6 +34,7 @@ function playerUpdate(dt)
             player.jumping = false
         else
             player.jumping = true
+            player.animation = animations.jumping
         end
     end
 

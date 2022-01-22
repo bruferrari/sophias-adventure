@@ -1,5 +1,6 @@
 wf = require('libs/windfield/windfield')
 anim8 = require('libs/anim8/anim8')
+sti = require('libs/Simple-Tiled-Implementation/sti')
 
 sprites = {}
 animations = {}
@@ -17,20 +18,27 @@ function love.load()
     sprites.player = love.graphics.newImage('sprites/baby-running.png')
     local animGrid = anim8.newGrid(228, 278, sprites.player:getWidth(), sprites.player:getHeight())
 
-    animations.walking = anim8.newAnimation(animGrid('1-4', 4), 0.3)
-    animations.idle = anim8.newAnimation(animGrid('1-1', 4), 0.3)
+    local playerAnimTime = 0.25
 
-    spawnPlatform()
+    animations.walking = anim8.newAnimation(animGrid('1-4', 4), playerAnimTime)
+    animations.idle = anim8.newAnimation(animGrid('1-1', 4), playerAnimTime)
+    animations.jumping = anim8.newAnimation(animGrid('4-4', 4), playerAnimTime)
+    animations.happy = anim8.newAnimation(animGrid('2-4', 1), 0.4)
+
     require('player')
+
+    loadMap()
 end
 
 function love.draw()
     world:draw()
+    gameMap:drawLayer(gameMap.layers['Tile Layer 1'])
     drawPlayer()
 end
 
 function love.update(dt)
     world:update(dt)
+    gameMap:update(dt)
     playerUpdate(dt)
 end
 
@@ -46,7 +54,17 @@ function love.keypressed(key)
     end
 end
 
-function spawnPlatform()
-    local platform = world:newRectangleCollider(200, 400, 300, 100, { collision_class='platform' })
-    platform:setType('static')
+function spawnPlatform(x, y, width, height)
+    if width > 0 and height > 0 then
+        local platform = world:newRectangleCollider(x, y, width, height, { collision_class='platform' })
+        platform:setType('static')
+    end
+end
+
+function loadMap()
+    gameMap = sti('maps/level_one.lua')
+
+    for _, platform in ipairs(gameMap.layers['Platforms'].objects) do
+        spawnPlatform(platform.x, platform.y, platform.width, platform.height)
+    end
 end
