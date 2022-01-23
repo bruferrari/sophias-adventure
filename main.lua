@@ -5,6 +5,7 @@ camera = require('libs/hump/camera')
 
 sprites = {}
 animations = {}
+platforms = {}
 game = {
     width = 1024,
     height = 768
@@ -12,6 +13,7 @@ game = {
 
 function love.load()
     love.window.setMode(game.width, game.height)
+    love.window.setTitle("Sophia's Adventure")
     world = wf.newWorld(0, 800, false)
     world:setQueryDebugDrawing(true)
     world:addCollisionClass('platform')
@@ -21,7 +23,7 @@ function love.load()
     sprites.player = love.graphics.newImage('sprites/baby-running.png')
     local animGrid = anim8.newGrid(228, 278, sprites.player:getWidth(), sprites.player:getHeight())
 
-    local playerAnimTime = 0.09
+    local playerAnimTime = 0.25
 
     animations.walking = anim8.newAnimation(animGrid('1-4', 4), playerAnimTime)
     animations.idle = anim8.newAnimation(animGrid('1-1', 4), playerAnimTime)
@@ -66,6 +68,7 @@ function spawnPlatform(x, y, width, height)
     if width > 0 and height > 0 then
         local platform = world:newRectangleCollider(x, y, width, height, { collision_class='platform' })
         platform:setType('static')
+        table.insert(platforms, platform)
     end
 end
 
