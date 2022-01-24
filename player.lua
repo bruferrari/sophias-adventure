@@ -1,4 +1,5 @@
 player = world:newRectangleCollider(360, 100, 50, 60, nil)
+player:setFixedRotation(true)
 player.speed = 200
 player.direction = 1
 player.jumping = false
@@ -13,7 +14,7 @@ function playerUpdate(dt)
             player:getY() + 30,
             40,
             2,
-            {'platform'}
+            {'platform', 'danger'}
         )
 
         local px, py = player:getPosition()

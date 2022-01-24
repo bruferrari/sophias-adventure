@@ -15,8 +15,11 @@ function love.load()
     love.window.setMode(game.width, game.height)
     love.window.setTitle("Sophia's Adventure")
     world = wf.newWorld(0, 800, false)
+
     world:setQueryDebugDrawing(true)
+
     world:addCollisionClass('platform')
+    world:addCollisionClass('danger')
 
     cam = camera()
 
@@ -31,6 +34,7 @@ function love.load()
     animations.happy = anim8.newAnimation(animGrid('2-4', 1), 0.15)
 
     require('player')
+    require('enemy')
 
     loadMap()
 end
@@ -47,6 +51,7 @@ function love.update(dt)
     world:update(dt)
     gameMap:update(dt)
     playerUpdate(dt)
+    enemiesUpdate(dt)
 
     local px, py = player:getPosition()
     cam:lookAt(px, love.graphics.getHeight() / 2)
@@ -77,5 +82,9 @@ function loadMap()
 
     for _, platform in ipairs(gameMap.layers['Platforms'].objects) do
         spawnPlatform(platform.x, platform.y, platform.width, platform.height)
+    end
+
+    for _, enemy in ipairs(gameMap.layers['Enemies'].objects) do
+        spawnEnemy(enemy.x, enemy.y, enemy.width, enemy.height)
     end
 end
