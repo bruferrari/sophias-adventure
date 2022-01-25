@@ -3,6 +3,7 @@ player:setFixedRotation(true)
 player.speed = 200
 player.direction = 1
 player.jumping = false
+player.celebrating = false
 player.animation = animations.idle
 
 function playerUpdate(dt)
@@ -32,7 +33,9 @@ function playerUpdate(dt)
         end
 
         if love.keyboard.isDown('space') then
-            player.animation = animations.happy
+            if player.animation == animations.idle then
+                player.animation = animations.celebrating
+            end
         end
 
         if #colliders > 0 then

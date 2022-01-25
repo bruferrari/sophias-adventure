@@ -27,11 +27,12 @@ function love.load()
     local animGrid = anim8.newGrid(228, 278, sprites.player:getWidth(), sprites.player:getHeight())
 
     local playerAnimTime = 0.25
+    local playerCelbAnimTime = 0.15
 
     animations.walking = anim8.newAnimation(animGrid('1-4', 4), playerAnimTime)
     animations.idle = anim8.newAnimation(animGrid('1-1', 4), playerAnimTime)
     animations.jumping = anim8.newAnimation(animGrid('4-4', 4), playerAnimTime)
-    animations.happy = anim8.newAnimation(animGrid('2-4', 1), 0.15)
+    animations.celebrating = anim8.newAnimation(animGrid('2-4', 1), playerCelbAnimTime)
 
     require('player')
     require('enemy')
