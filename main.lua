@@ -55,7 +55,23 @@ function love.update(dt)
     enemiesUpdate(dt)
 
     local px, py = player:getPosition()
-    cam:lookAt(px, love.graphics.getHeight() / 2)
+
+    print("px: " .. px)
+    print("py: " .. px)
+    print("screen width: " .. love.graphics.getWidth())
+
+    local pov = px
+    local mapW = gameMap.layers['Baseline'].objects[1].width
+
+    if px <= love.graphics.getWidth() / 2 then
+        pov = love.graphics.getWidth() / 2
+    elseif mapW - px <= love.graphics.getWidth() / 2 then
+        pov = mapW - love.graphics.getWidth() / 2
+    else
+        pov = px
+    end
+
+    cam:lookAt(pov, love.graphics.getHeight() / 2)
 end
 
 function love.keypressed(key)
@@ -81,7 +97,7 @@ end
 function loadMap()
     gameMap = sti('maps/level_one.lua')
 
-    for _, platform in ipairs(gameMap.layers['Platforms'].objects) do
+    for _, platform in ipairs(gameMap.layers['Baseline'].objects) do
         spawnPlatform(platform.x, platform.y, platform.width, platform.height)
     end
 

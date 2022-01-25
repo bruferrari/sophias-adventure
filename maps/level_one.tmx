@@ -22,7 +22,7 @@
 7,8,9,7,8,9,7,8,9,7,8,9,7,8,9,7,8,9,7,8,9,7,8,9,7,8,9,7,8,9,7,8,9,7,8,9,7,8,9,7
 </data>
  </layer>
- <objectgroup id="3" name="Platforms">
+ <objectgroup id="3" name="Baseline">
   <object id="1" x="0" y="576" width="2560" height="192"/>
  </objectgroup>
  <objectgroup id="4" name="Enemies">

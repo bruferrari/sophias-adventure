@@ -75,7 +75,7 @@ return {
       type = "objectgroup",
       draworder = "topdown",
       id = 3,
-      name = "Platforms",
+      name = "Baseline",
       visible = true,
       opacity = 1,
       offsetx = 0,
