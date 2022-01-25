@@ -8,7 +8,8 @@ animations = {}
 platforms = {}
 game = {
     width = 1024,
-    height = 768
+    height = 768,
+    debugMode = true
 }
 
 function love.load()
@@ -54,12 +55,11 @@ function love.update(dt)
     playerUpdate(dt)
     enemiesUpdate(dt)
 
-    local px, py = player:getPosition()
-
-    print("px: " .. px)
-    print("py: " .. px)
-    print("screen width: " .. love.graphics.getWidth())
-
+    if game.debugMode then
+        displayDebugInfo()
+    end
+    
+    local px, _ = player:getPosition()
     local pov = px
     local mapW = gameMap.layers['Baseline'].objects[1].width
 
@@ -84,6 +84,10 @@ function love.keypressed(key)
             player:applyLinearImpulse(0, -3000)
         end
     end
+
+    if key == 'g' then
+        game.debugMode = not game.debugMode
+    end
 end
 
 function spawnPlatform(x, y, width, height)
@@ -104,4 +108,12 @@ function loadMap()
     for _, enemy in ipairs(gameMap.layers['Enemies'].objects) do
         spawnEnemy(enemy.x, enemy.y, enemy.width, enemy.height)
     end
+end
+
+function displayDebugInfo()
+    local px, py = player:getPosition()
+    print("px: " .. px)
+    print("py: " .. py)
+    print("screen width: " .. love.graphics.getWidth())
+    print("screen height: " .. love.graphics.getHeight())
 end
