@@ -37,13 +37,14 @@ function playerUpdate(dt)
                 player.animation = animations.celebrating
             end
         end
-
+      
         if #colliders > 0 then
             player.jumping = false
         else
             player.jumping = true
             player.animation = animations.jumping
         end
+
     end
 
     player.animation:update(dt)

@@ -6,6 +6,7 @@ camera = require('libs/hump/camera')
 sprites = {}
 animations = {}
 platforms = {}
+thresholds = {}
 game = {
     width = 1024,
     height = 768,
@@ -58,7 +59,7 @@ function love.update(dt)
     if game.debugMode then
         displayDebugInfo()
     end
-    
+
     local px, _ = player:getPosition()
     local pov = px
     local mapW = gameMap.layers['Baseline'].objects[1].width
@@ -98,6 +99,14 @@ function spawnPlatform(x, y, width, height)
     end
 end
 
+function spawnMapThreshold(x, y, width, height)
+    if width > 0 and height > 0 then
+        local threshold = world:newRectangleCollider(x, y, width, height, { collision_class='threshold' })
+        threshold:setType('static')
+        table.insert(thresholds, threshold)
+    end
+end
+
 function loadMap()
     gameMap = sti('maps/level_one.lua')
 
@@ -107,6 +116,10 @@ function loadMap()
 
     for _, enemy in ipairs(gameMap.layers['Enemies'].objects) do
         spawnEnemy(enemy.x, enemy.y, enemy.width, enemy.height)
+    end
+
+    for _, threshold in ipairs(gameMap.layers["Thresholds"].objects) do
+        spawnMapThreshold(threshold.x, threshold.y, threshold.width, threshold.height)
     end
 end
 
