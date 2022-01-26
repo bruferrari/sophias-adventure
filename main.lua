@@ -27,6 +27,9 @@ function love.load()
     cam = camera()
 
     sprites.player = love.graphics.newImage('sprites/baby-running.png')
+    sprites.nightBg = love.graphics.newImage('sprites/night_bg.png')
+    sprites.forestBg = love.graphics.newImage('sprites/forest_bg.png')
+
     local animGrid = anim8.newGrid(228, 278, sprites.player:getWidth(), sprites.player:getHeight())
 
     local playerAnimTime = 0.25
@@ -44,8 +47,12 @@ function love.load()
 end
 
 function love.draw()
+    -- love.graphics.draw(sprites.nightBg, 0, 0, 0, 2, 2, nil, nil)
+    love.graphics.draw(sprites.forestBg, 0, 0, 0, 0.55, 0.55)
     cam:attach()
-    world:draw()
+    if game.debugMode then
+        world:draw()
+    end
     gameMap:drawLayer(gameMap.layers['Tile Layer 1'])
     drawPlayer()
     cam:detach()
