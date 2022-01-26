@@ -22,6 +22,7 @@ function love.load()
 
     world:addCollisionClass('platform')
     world:addCollisionClass('danger')
+    world:addCollisionClass('threshold')
 
     cam = camera()
 

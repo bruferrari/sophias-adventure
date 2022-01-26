@@ -3,7 +3,7 @@ enemies = {}
 function spawnEnemy(x, y, width, height)
     enemy = world:newRectangleCollider(x, y, width, height, {collision_class='danger'})
     enemy.id = #enemies + 1
-    enemy.speed = 100
+    enemy.speed = 150
     enemy.direction = -1
 
     table.insert(enemies, enemy)
@@ -13,9 +13,9 @@ function enemiesUpdate(dt)
     for _, enemy in ipairs(enemies) do
         -- todo: update enemy animation
         local ex, ey = enemy:getPosition()
-        local colliders = world:queryRectangleArea(ex + 30 * enemy.direction, ey + 30, 10, 10, {'platform'})
+        local colliders = world:queryRectangleArea(ex + 35 * enemy.direction, ey + 30, 10, 10, {'threshold'})
 
-        if #colliders == 0 then
+        if #colliders > 0 then
             local oldDirection = enemy.direction
             enemy.direction = enemy.direction * -1
             if oldDirection ~= enemy.direction then
