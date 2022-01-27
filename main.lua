@@ -29,16 +29,25 @@ function love.load()
     sprites.player = love.graphics.newImage('sprites/baby-running.png')
     sprites.nightBg = love.graphics.newImage('sprites/night_bg.png')
     sprites.forestBg = love.graphics.newImage('sprites/forest_bg.png')
+    sprites.enemies = love.graphics.newImage('sprites/enemies.png')
 
-    local animGrid = anim8.newGrid(228, 278, sprites.player:getWidth(), sprites.player:getHeight())
+    sprites.enemies:setFilter('nearest')
+
+    local playerAnimGrid = anim8.newGrid(228, 278, sprites.player:getWidth(), sprites.player:getHeight())
+    local enemyAnimGrid = anim8.newGrid(16, 16, sprites.enemies:getWidth(), sprites.enemies:getHeight())
 
     local playerAnimTime = 0.25
     local playerCelbAnimTime = 0.15
 
-    animations.walking = anim8.newAnimation(animGrid('1-4', 4), playerAnimTime)
-    animations.idle = anim8.newAnimation(animGrid('1-1', 4), playerAnimTime)
-    animations.jumping = anim8.newAnimation(animGrid('4-4', 4), playerAnimTime)
-    animations.celebrating = anim8.newAnimation(animGrid('2-4', 1), playerCelbAnimTime)
+    animations.walking = anim8.newAnimation(playerAnimGrid('1-4', 4), playerAnimTime)
+    animations.idle = anim8.newAnimation(playerAnimGrid('1-1', 4), playerAnimTime)
+    animations.jumping = anim8.newAnimation(playerAnimGrid('4-4', 4), playerAnimTime)
+    animations.celebrating = anim8.newAnimation(playerAnimGrid('2-4', 1), playerCelbAnimTime)
+
+    local enemyAnimTime = 0.08
+    animations.blueEnemyWalking = anim8.newAnimation(enemyAnimGrid('2-6', 3), enemyAnimTime)
+    animations.redEnemyWalking = anim8.newAnimation(enemyAnimGrid('2-6', 5), enemyAnimTime)
+    animations.greenEnemyWalking = anim8.newAnimation(enemyAnimGrid('2-6', 7), enemyAnimTime)
 
     require('player')
     require('enemy')
@@ -47,7 +56,6 @@ function love.load()
 end
 
 function love.draw()
-    -- love.graphics.draw(sprites.nightBg, 0, 0, 0, 2, 2, nil, nil)
     love.graphics.draw(sprites.forestBg, 0, 0, 0, 0.55, 0.55)
     cam:attach()
     if game.debugMode then
@@ -55,6 +63,7 @@ function love.draw()
     end
     gameMap:drawLayer(gameMap.layers['Tile Layer 1'])
     drawPlayer()
+    enemies:draw()
     cam:detach()
 end
 
@@ -62,7 +71,7 @@ function love.update(dt)
     world:update(dt)
     gameMap:update(dt)
     playerUpdate(dt)
-    enemiesUpdate(dt)
+    enemies:update(dt)
 
     if game.debugMode then
         displayDebugInfo()
@@ -122,8 +131,12 @@ function loadMap()
         spawnPlatform(platform.x, platform.y, platform.width, platform.height)
     end
 
+    for _, platform in ipairs(gameMap.layers["Platforms"].objects) do
+        spawnPlatform(platform.x, platform.y, platform.width, platform.height)
+    end
+
     for _, enemy in ipairs(gameMap.layers['Enemies'].objects) do
-        spawnEnemy(enemy.x, enemy.y, enemy.width, enemy.height)
+        enemies:spawn(enemy.x, enemy.y, enemy.width, enemy.height, enemy.properties['enemy_type'])
     end
 
     for _, threshold in ipairs(gameMap.layers["Thresholds"].objects) do
