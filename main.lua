@@ -99,7 +99,7 @@ function love.keypressed(key)
 
     if key == 'up' then
         if not player.jumping then
-            player:applyLinearImpulse(0, -3000)
+            player:applyLinearImpulse(0, -3500)
         end
     end
 
