@@ -29,19 +29,19 @@ function enemies:spawn(x, y, width, height, type)
     if type == enemyClass['blue'].type then
         local class = enemyClass['blue']
 
-        enemy = world:newRectangleCollider(x, y, width, height, enemyClass.collision_classes)
+        enemy = world:newRectangleCollider(x, y, width, height, class.collision_classes)
         enemy.speed = class.speed
         enemy.animation = class.animation
     elseif type == enemyClass['red'].type then
         local class = enemyClass['red']
 
-        enemy = world:newRectangleCollider(x, y, width, height, enemyClass.collision_classes)
+        enemy = world:newRectangleCollider(x, y, width, height, class.collision_classes)
         enemy.speed = class.speed
         enemy.animation = class.animation
     elseif type == enemyClass['green'].type then
         local class = enemyClass['green']
 
-        enemy = world:newRectangleCollider(x, y, width, height, enemyClass.collision_classes)
+        enemy = world:newRectangleCollider(x, y, width, height, class.collision_classes)
         enemy.speed = class.speed
         enemy.animation = class.animation
     else
