@@ -1,4 +1,4 @@
-require('utils/timer')
+local timer = require('utils/timer')
 local enemyFixtureCategory = 2
 
 enemies = {}
@@ -58,7 +58,7 @@ end
 function enemies:update(dt)
     if game.debugMode then
         print("player available lives: " .. player.lives)
-        log()
+        timer.log()
     end
 
     enemies:destroy()
@@ -80,7 +80,7 @@ function enemies:update(dt)
                 enemy.animation = animations.blueEnemyDying
             end
          
-            local readyToDie = wait(dt, 2)
+            local readyToDie = timer.wait(dt, 2)
             if game.debugMode then
                 print("ready to die: " .. tostring(readyToDie))
             end

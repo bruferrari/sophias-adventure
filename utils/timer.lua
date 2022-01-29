@@ -1,13 +1,17 @@
-local timer = 0
+local timer = {
+    ellapsed = 0
+}
 
-function wait(dt, s)
-    timer = timer + dt
-    if timer > s then
+function timer.wait(dt, seconds)
+    timer.ellapsed = timer.ellapsed + dt
+    if timer.ellapsed > seconds then
         return true
     end
     return false
 end
 
-function log()
-    print("timer: " .. timer)
+function timer.log()
+    print("timer: " .. timer.ellapsed)
 end
+
+return timer
