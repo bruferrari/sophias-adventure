@@ -49,6 +49,7 @@ function love.load()
     animations.blueEnemyWalking = anim8.newAnimation(enemyAnimGrid('2-6', 3), enemyAnimTime)
     animations.redEnemyWalking = anim8.newAnimation(enemyAnimGrid('2-6', 5), enemyAnimTime)
     animations.greenEnemyWalking = anim8.newAnimation(enemyAnimGrid('2-6', 7), enemyAnimTime)
+    animations.blueEnemyDying = anim8.newAnimation(enemyAnimGrid('2-5', 2), 0.4)
 
     require('player')
     require('enemy')

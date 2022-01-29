@@ -1,3 +1,4 @@
+require('utils/timer')
 local enemyFixtureCategory = 2
 
 enemies = {}
@@ -38,11 +39,13 @@ function enemies:spawn(x, y, width, height, type)
 
     if class ~= nil then
         local enemy = world:newRectangleCollider(x, y, width, height, class.collision_classes)
+        enemy.type = type
         enemy.speed = class.speed
         enemy.animation = class.animation
         enemy.id = #enemies + 1
         enemy.direction = -1
         enemy.dead = false
+        enemy.colliding = false
 
         enemy:setFixedRotation(true)
         enemy:setCategory(enemyFixtureCategory)
@@ -54,7 +57,8 @@ end
 
 function enemies:update(dt)
     if game.debugMode then
-        print("player life: " .. player.life)
+        print("player available lives: " .. player.lives)
+        log()
     end
 
     enemies:destroy()
@@ -65,8 +69,27 @@ function enemies:update(dt)
         local playerColliders = world:queryRectangleArea(ex + 35 * enemy.direction, ey + 30, 10, 10, {'player'})
 
         if #playerColliders > 0 then
-            player.life = player.life - 25
-            enemy.dead = true
+            if not enemy.colliding then
+                player:hurt()
+            end
+
+            enemy.colliding = true
+        
+            if enemy.type == 1 then
+                enemy.speed = 0
+                enemy.animation = animations.blueEnemyDying
+            end
+         
+            local readyToDie = wait(dt, 2)
+            if game.debugMode then
+                print("ready to die: " .. tostring(readyToDie))
+            end
+
+            if readyToDie then
+                enemy.dead = true
+            end
+        else
+            enemy.colliding = false
         end
 
         if #tColliders > 0 or #pColliders == 0 then

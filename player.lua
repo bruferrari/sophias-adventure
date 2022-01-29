@@ -1,12 +1,11 @@
 player = world:newRectangleCollider(360, 100, 50, 60, { collision_class = 'player' })
 player:setFixedRotation(true)
 player.speed = 200
-player.life = 100
+player.lives = 3
 player.direction = 1
 player.jumping = false
 player.celebrating = false
 player.animation = animations.idle
-player.colliding = false
 
 function playerUpdate(dt)
     player.animation = animations.idle
@@ -53,4 +52,8 @@ end
 function drawPlayer()
     local px, py = player:getPosition()
     player.animation:draw(sprites.player, px, py, nil, 0.25 * player.direction, 0.25, 100, 150)
+end
+
+function player:hurt()
+    player.lives = player.lives - 1
 end
