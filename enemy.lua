@@ -1,24 +1,62 @@
+local enemyFixtureCategory = 2
+
 enemies = {}
 
+local enemyClass = {
+    ['blue'] = {
+        type = 1,
+        speed = 100,
+        animation = animations.blueEnemyWalking,
+        collision_classes = {'danger'}
+    },
+    ['red'] = {
+        type = 2,
+        speed = 200,
+        animation = animations.redEnemyWalking,
+        collision_classes = {'danger'}
+    },
+    ['green'] = {
+        type = 3,
+        speed = 75,
+        animation = animations.greenEnemyWalking,
+        collision_classes = {'danger'}
+    }
+}
+
 function enemies:spawn(x, y, width, height, type)
-    enemy = world:newRectangleCollider(x, y, width, height, {collision_class='danger'})
-    enemy.id = #enemies + 1
-    enemy.speed = 150
-    enemy.direction = -1
-    enemy.animation = enemies:getAnimation(type)
+    local enemy = nil
 
-    enemy:setFixedRotation(true)
+    if type == enemyClass['blue'].type then
+        local class = enemyClass['blue']
 
-    table.insert(enemies, enemy)
-end
+        enemy = world:newRectangleCollider(x, y, width, height, enemyClass.collision_classes)
+        enemy.speed = class.speed
+        enemy.animation = class.animation
+    elseif type == enemyClass['red'].type then
+        local class = enemyClass['red']
 
-function enemies:getAnimation(enemyType)
-    if enemyType == 1 then
-        return animations.blueEnemyWalking
-    elseif enemyType == 2 then
-        return animations.redEnemyWalking
+        enemy = world:newRectangleCollider(x, y, width, height, enemyClass.collision_classes)
+        enemy.speed = class.speed
+        enemy.animation = class.animation
+    elseif type == enemyClass['green'].type then
+        local class = enemyClass['green']
+
+        enemy = world:newRectangleCollider(x, y, width, height, enemyClass.collision_classes)
+        enemy.speed = class.speed
+        enemy.animation = class.animation
     else
-        return animations.greenEnemyWalking
+        print('could not create an enemy with type=' .. type)
+    end
+
+    if enemy ~= nil then
+        enemy.id = #enemies + 1
+        enemy.direction = -1
+
+        enemy:setFixedRotation(true)
+        enemy:setCategory(enemyFixtureCategory)
+        enemy:setMask(enemyFixtureCategory)
+
+        table.insert(enemies, enemy)
     end
 end
 
