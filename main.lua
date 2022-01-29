@@ -64,7 +64,7 @@ function love.draw()
         world:draw()
     end
     gameMap:drawLayer(gameMap.layers['Tile Layer 1'])
-    drawPlayer()
+    player:draw()
     enemies:draw()
     cam:detach()
 end
@@ -72,7 +72,7 @@ end
 function love.update(dt)
     world:update(dt)
     gameMap:update(dt)
-    playerUpdate(dt)
+    player:update(dt)
     enemies:update(dt)
 
     if game.debugMode then

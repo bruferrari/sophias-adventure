@@ -7,7 +7,7 @@ player.jumping = false
 player.celebrating = false
 player.animation = animations.idle
 
-function playerUpdate(dt)
+function player:update(dt)
     player.animation = animations.idle
     local px, py = player:getPosition()
 
@@ -49,7 +49,7 @@ function playerUpdate(dt)
     player.animation:update(dt)
 end
 
-function drawPlayer()
+function player:draw()
     local px, py = player:getPosition()
     player.animation:draw(sprites.player, px, py, nil, 0.25 * player.direction, 0.25, 100, 150)
 end
