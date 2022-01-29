@@ -24,7 +24,6 @@ local enemyClass = {
 }
 
 function enemies:spawn(x, y, width, height, type)
-    local enemy = nil
     local class = nil
 
     if type == enemyClass['blue'].type then
@@ -37,8 +36,8 @@ function enemies:spawn(x, y, width, height, type)
         print('could not create an enemy with type=' .. type)
     end
 
-    if enemy ~= nil or class ~= nil then
-        enemy = world:newRectangleCollider(x, y, width, height, class.collision_classes)
+    if class ~= nil then
+        local enemy = world:newRectangleCollider(x, y, width, height, class.collision_classes)
         enemy.speed = class.speed
         enemy.animation = class.animation
         enemy.id = #enemies + 1
