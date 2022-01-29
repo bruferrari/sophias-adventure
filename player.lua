@@ -1,24 +1,25 @@
-player = world:newRectangleCollider(360, 100, 50, 60, nil)
+player = world:newRectangleCollider(360, 100, 50, 60, { collision_class = 'player' })
 player:setFixedRotation(true)
 player.speed = 200
+player.life = 100
 player.direction = 1
 player.jumping = false
 player.celebrating = false
 player.animation = animations.idle
+player.colliding = false
 
 function playerUpdate(dt)
     player.animation = animations.idle
+    local px, py = player:getPosition()
 
     if player.body then
         local colliders = world:queryRectangleArea(
-            player:getX() - 20,
-            player:getY() + 30,
+            px - 20,
+            py + 30,
             40,
             2,
-            {'platform', 'danger'}
+            {'platform'}
         )
-
-        local px, py = player:getPosition()
 
         if love.keyboard.isDown('left') then
             player:setX(px - player.speed * dt)
@@ -37,14 +38,13 @@ function playerUpdate(dt)
                 player.animation = animations.celebrating
             end
         end
-         
+      
         if #colliders > 0 then
             player.jumping = false
         else
             player.jumping = true
             player.animation = animations.jumping
         end
-
     end
 
     player.animation:update(dt)

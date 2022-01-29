@@ -20,6 +20,7 @@ function love.load()
 
     world:setQueryDebugDrawing(true)
 
+    world:addCollisionClass('player')
     world:addCollisionClass('platform')
     world:addCollisionClass('danger')
     world:addCollisionClass('threshold')

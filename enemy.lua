@@ -7,19 +7,19 @@ local enemyClass = {
         type = 1,
         speed = 100,
         animation = animations.blueEnemyWalking,
-        collision_classes = {'danger'}
+        collision_classes = {collision_class = 'danger'}
     },
     ['red'] = {
         type = 2,
         speed = 200,
         animation = animations.redEnemyWalking,
-        collision_classes = {'danger'}
+        collision_classes = {collision_class = 'danger'}
     },
     ['green'] = {
         type = 3,
         speed = 75,
         animation = animations.greenEnemyWalking,
-        collision_classes = {'danger'}
+        collision_classes = {collision_class = 'danger'}
     }
 }
 
@@ -42,6 +42,7 @@ function enemies:spawn(x, y, width, height, type)
         enemy.animation = class.animation
         enemy.id = #enemies + 1
         enemy.direction = -1
+        enemy.dead = false
 
         enemy:setFixedRotation(true)
         enemy:setCategory(enemyFixtureCategory)
@@ -52,10 +53,21 @@ function enemies:spawn(x, y, width, height, type)
 end
 
 function enemies:update(dt)
+    if game.debugMode then
+        print("player life: " .. player.life)
+    end
+
+    enemies:destroy()
     for _, enemy in ipairs(enemies) do
         local ex, ey = enemy:getPosition()
         local pColliders = world:queryRectangleArea(ex + 20 * enemy.direction, ey + 30, 10, 2, {'platform'})
         local tColliders = world:queryRectangleArea(ex + 35 * enemy.direction, ey + 30, 10, 10, {'threshold'})
+        local playerColliders = world:queryRectangleArea(ex + 35 * enemy.direction, ey + 30, 10, 10, {'player'})
+
+        if #playerColliders > 0 then
+            player.life = player.life - 25
+            enemy.dead = true
+        end
 
         if #tColliders > 0 or #pColliders == 0 then
             local oldDirection = enemy.direction
@@ -77,5 +89,14 @@ function enemies:draw()
     for _, enemy in ipairs(enemies) do
         local ex, ey = enemy:getPosition()
         enemy.animation:draw(sprites.enemies, ex, ey, nil, 4 * enemy.direction * -1, 4, 8, 7.5)
+    end
+end
+
+function enemies:destroy()
+    for i, enemy in ipairs(enemies) do
+        if enemy.dead then
+            enemy:destroy()
+            table.remove(enemies, i)
+        end
     end
 end
