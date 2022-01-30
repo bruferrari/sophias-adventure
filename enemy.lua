@@ -40,7 +40,6 @@ function enemies:spawn(x, y, width, height, type)
         enemy.id = #enemies + 1
         enemy.direction = -1
         enemy.dead = false
-        enemy.colliding = false
 
         enemy:setFixedRotation(true)
         enemy:setCategory(enemyFixtureCategory)
@@ -65,16 +64,13 @@ function enemies:update(dt)
         local playerColliders = world:queryRectangleArea(ex - 30, ey - 30, enemy.width, enemy.height, {'player'})
 
         if #playerColliders > 0 then
-            if not enemy.colliding then
+            if not enemy.dead then
                 player:hurt()
             end
 
-            enemy.colliding = true
             enemy.dead = true
             enemy.speed = 0
             enemy.animation = enemyClass[enemy.type].dying_animation
-        else
-            enemy.colliding = false
         end
 
         if #tColliders > 0 or #pColliders == 0 then

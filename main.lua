@@ -31,6 +31,7 @@ function love.load()
     sprites.nightBg = love.graphics.newImage('sprites/night_bg.png')
     sprites.forestBg = love.graphics.newImage('sprites/forest_bg.png')
     sprites.enemies = love.graphics.newImage('sprites/enemies.png')
+    sprites.heart = love.graphics.newImage('sprites/heart.png')
 
     sprites.enemies:setFilter('nearest')
 
@@ -63,6 +64,7 @@ end
 
 function love.draw()
     love.graphics.draw(sprites.forestBg, 0, 0, 0, 0.55, 0.55)
+    drawLives()
     cam:attach()
     if game.debugMode then
         world:draw()
@@ -156,4 +158,12 @@ function displayDebugInfo()
     print("py: " .. py)
     print("screen width: " .. love.graphics.getWidth())
     print("screen height: " .. love.graphics.getHeight())
+end
+
+function drawLives()
+    local hx = 0
+    for heart = 1, player.lives do
+        hx = hx + 40
+        love.graphics.draw(sprites.heart, hx, 30)
+    end
 end
