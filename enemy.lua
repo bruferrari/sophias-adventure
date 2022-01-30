@@ -33,6 +33,8 @@ function enemies:spawn(x, y, width, height, type)
     if class ~= nil then
         local enemy = world:newRectangleCollider(x, y, width, height, class.collision_classes)
         enemy.type = type
+        enemy.width = width
+        enemy.height = height
         enemy.speed = class.speed
         enemy.animation = class.animation
         enemy.id = #enemies + 1
@@ -60,7 +62,7 @@ function enemies:update(dt)
         local ex, ey = enemy:getPosition()
         local pColliders = world:queryRectangleArea(ex + 20 * enemy.direction, ey + 30, 10, 2, {'platform'})
         local tColliders = world:queryRectangleArea(ex + 35 * enemy.direction, ey + 30, 10, 10, {'threshold'})
-        local playerColliders = world:queryRectangleArea(ex + 35 * enemy.direction, ey + 30, 10, 10, {'player'})
+        local playerColliders = world:queryRectangleArea(ex - 30, ey - 30, enemy.width, enemy.height, {'player'})
 
         if #playerColliders > 0 then
             if not enemy.colliding then
