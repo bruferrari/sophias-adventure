@@ -152,7 +152,7 @@ return {
           rotation = 0,
           visible = true,
           properties = {
-            ["enemy_type"] = 1
+            ["enemy_type"] = "blue"
           }
         },
         {
@@ -167,7 +167,7 @@ return {
           rotation = 0,
           visible = true,
           properties = {
-            ["enemy_type"] = 2
+            ["enemy_type"] = "red"
           }
         },
         {
@@ -182,7 +182,7 @@ return {
           rotation = 0,
           visible = true,
           properties = {
-            ["enemy_type"] = 3
+            ["enemy_type"] = "green"
           }
         }
       }

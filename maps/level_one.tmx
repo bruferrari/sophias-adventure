@@ -31,17 +31,17 @@
  <objectgroup id="4" name="Enemies">
   <object id="2" x="1600" y="512" width="60" height="60">
    <properties>
-    <property name="enemy_type" type="int" value="1"/>
+    <property name="enemy_type" value="blue"/>
    </properties>
   </object>
   <object id="15" x="1792" y="512" width="60" height="60">
    <properties>
-    <property name="enemy_type" type="int" value="2"/>
+    <property name="enemy_type" value="red"/>
    </properties>
   </object>
   <object id="16" x="1152" y="320" width="60" height="60">
    <properties>
-    <property name="enemy_type" type="int" value="3"/>
+    <property name="enemy_type" value="green"/>
    </properties>
   </object>
  </objectgroup>

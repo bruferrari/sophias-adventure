@@ -5,37 +5,30 @@ enemies = {}
 
 local enemyClass = {
     ['blue'] = {
-        type = 1,
+        type = 'blue',
         speed = 100,
         animation = animations.blueEnemyWalking,
+        dying_animation = animations.blueEnemyDying,
         collision_classes = {collision_class = 'danger'}
     },
     ['red'] = {
-        type = 2,
+        type = 'red',
         speed = 200,
         animation = animations.redEnemyWalking,
+        dying_animation = animations.redEnemyDying,
         collision_classes = {collision_class = 'danger'}
     },
     ['green'] = {
-        type = 3,
+        type = 'green',
         speed = 75,
         animation = animations.greenEnemyWalking,
+        dying_animation = animations.greenEnemyDying,
         collision_classes = {collision_class = 'danger'}
     }
 }
 
 function enemies:spawn(x, y, width, height, type)
-    local class = nil
-
-    if type == enemyClass['blue'].type then
-        class = enemyClass['blue']
-    elseif type == enemyClass['red'].type then
-        class = enemyClass['red']
-    elseif type == enemyClass['green'].type then
-        class = enemyClass['green']
-    else
-        print('could not create an enemy with type=' .. type)
-    end
+    local class = enemyClass[type]
 
     if class ~= nil then
         local enemy = world:newRectangleCollider(x, y, width, height, class.collision_classes)
@@ -61,7 +54,8 @@ function enemies:update(dt)
         timer.log()
     end
 
-    enemies:destroy()
+    enemies:destroy(dt)
+
     for _, enemy in ipairs(enemies) do
         local ex, ey = enemy:getPosition()
         local pColliders = world:queryRectangleArea(ex + 20 * enemy.direction, ey + 30, 10, 2, {'platform'})
@@ -74,20 +68,9 @@ function enemies:update(dt)
             end
 
             enemy.colliding = true
-        
-            if enemy.type == 1 then
-                enemy.speed = 0
-                enemy.animation = animations.blueEnemyDying
-            end
-         
-            local readyToDie = timer.wait(dt, 2)
-            if game.debugMode then
-                print("ready to die: " .. tostring(readyToDie))
-            end
-
-            if readyToDie then
-                enemy.dead = true
-            end
+            enemy.dead = true
+            enemy.speed = 0
+            enemy.animation = enemyClass[enemy.type].dying_animation
         else
             enemy.colliding = false
         end
@@ -115,11 +98,13 @@ function enemies:draw()
     end
 end
 
-function enemies:destroy()
+function enemies:destroy(dt)
     for i, enemy in ipairs(enemies) do
         if enemy.dead then
-            enemy:destroy()
-            table.remove(enemies, i)
+            if timer.wait(dt, 2) then
+                enemy:destroy()
+                table.remove(enemies, i)
+            end
         end
     end
 end
