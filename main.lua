@@ -10,7 +10,8 @@ thresholds = {}
 game = {
     width = 1024,
     height = 768,
-    debugMode = true
+    debugMode = true,
+    currentMap = 'level_one'
 }
 
 function love.load()
@@ -59,12 +60,12 @@ function love.load()
     require('player')
     require('enemy')
 
-    loadMap()
+    loadMap('level_one')
 end
 
 function love.draw()
     love.graphics.draw(sprites.forestBg, 0, 0, 0, 0.55, 0.55)
-    drawLives()
+    player:drawLives()
     cam:attach()
     if game.debugMode then
         world:draw()
@@ -83,6 +84,10 @@ function love.update(dt)
 
     if game.debugMode then
         displayDebugInfo()
+    end
+
+    if player.lives == 0 then
+        resetMap()
     end
 
     local px, _ = player:getPosition()
@@ -132,8 +137,8 @@ function spawnMapThreshold(x, y, width, height)
     end
 end
 
-function loadMap()
-    gameMap = sti('maps/level_one.lua')
+function loadMap(map)
+    gameMap = sti('maps/' .. map .. '.lua')
 
     for _, platform in ipairs(gameMap.layers['Baseline'].objects) do
         spawnPlatform(platform.x, platform.y, platform.width, platform.height)
@@ -152,18 +157,32 @@ function loadMap()
     end
 end
 
+function resetMap()
+    destroyPlatforms()
+    destroyEnemies()
+    loadMap(game.currentMap)
+    player:setPosition(360, 100)
+    player.lives = 5
+end
+
+function destroyPlatforms()
+    for i, platform in ipairs(platforms) do
+        platform:destroy()
+        table.remove(platforms, i)
+    end
+end
+
+function destroyEnemies()
+    for i, enemy in ipairs(enemies) do
+        enemy:destroy()
+        table.remove(enemies, i)
+    end
+end
+
 function displayDebugInfo()
     local px, py = player:getPosition()
     print("px: " .. px)
     print("py: " .. py)
     print("screen width: " .. love.graphics.getWidth())
     print("screen height: " .. love.graphics.getHeight())
-end
-
-function drawLives()
-    local hx = 0
-    for heart = 1, player.lives do
-        hx = hx + 40
-        love.graphics.draw(sprites.heart, hx, 30)
-    end
 end

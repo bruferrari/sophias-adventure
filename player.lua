@@ -1,7 +1,7 @@
 player = world:newRectangleCollider(360, 100, 50, 60, { collision_class = 'player' })
 player:setFixedRotation(true)
 player.speed = 200
-player.lives = 3
+player.lives = 2
 player.direction = 1
 player.jumping = false
 player.celebrating = false
@@ -56,4 +56,12 @@ end
 
 function player:hurt()
     player.lives = player.lives - 1
+end
+
+function player:drawLives()
+    local hx = 0
+    for index = 1, player.lives do
+        hx = hx + 40
+        love.graphics.draw(sprites.heart, hx, 30)
+    end
 end
