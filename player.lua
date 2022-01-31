@@ -1,7 +1,7 @@
 player = world:newRectangleCollider(360, 100, 50, 60, { collision_class = 'player' })
 player:setFixedRotation(true)
 player.speed = 200
-player.lives = 2
+player.lives = 3
 player.direction = 1
 player.jumping = false
 player.celebrating = false

@@ -162,7 +162,7 @@ function resetMap()
     destroyEnemies()
     loadMap(game.currentMap)
     player:setPosition(360, 100)
-    player.lives = 5
+    player.lives = 3
 end
 
 function destroyPlatforms()
