@@ -69,7 +69,7 @@ function enemies:update(dt)
         timer.log()
     end
 
-    enemies:destroy(dt, animationDurationInSeconds)
+    enemies:destroy(dt)
 
     for _, enemy in ipairs(enemies) do
         local ex, ey = enemy:getPosition()
@@ -113,10 +113,10 @@ function enemies:draw()
     end
 end
 
-function enemies:destroy(dt, waitTime)
+function enemies:destroy(dt)
     for i, enemy in ipairs(enemies) do
         if enemy.dead then
-            if timer.wait(dt, waitTime) then
+            if timer.wait(dt, animationDurationInSeconds) then
                 enemy:destroy()
                 table.remove(enemies, i)
             end
