@@ -1,5 +1,6 @@
 local timer = require('utils/timer')
 local enemyFixtureCategory = 2
+local animationDurationInSeconds = 2
 
 enemies = {}
 
@@ -9,23 +10,36 @@ local enemyClass = {
         speed = 100,
         animation = animations.blueEnemyWalking,
         dying_animation = animations.blueEnemyDying,
-        collision_classes = {collision_class = 'danger'}
+        smash_animation = animations.blueEnemySmashed,
+        collision_classes = {collision_class = 'enemy'}
     },
     ['red'] = {
         type = 'red',
         speed = 200,
         animation = animations.redEnemyWalking,
         dying_animation = animations.redEnemyDying,
-        collision_classes = {collision_class = 'danger'}
+        smash_animation = animations.redEnemySmashed,
+        collision_classes = {collision_class = 'enemy'}
     },
     ['green'] = {
         type = 'green',
         speed = 75,
         animation = animations.greenEnemyWalking,
         dying_animation = animations.greenEnemyDying,
-        collision_classes = {collision_class = 'danger'}
+        smash_animation = animations.greenEnemySmashed,
+        collision_classes = {collision_class = 'enemy'}
     }
 }
+
+local function setDead(enemy, deathType, animDuration)
+    local smashDeathAnim = enemyClass[enemy.type].smash_animation
+    local defaultDeathAnim = enemyClass[enemy.type].dying_animation
+
+    animationDurationInSeconds = animDuration
+    enemy.dead = true
+    enemy.speed = 0
+    enemy.animation = deathType == 'smash' and smashDeathAnim or defaultDeathAnim
+end
 
 function enemies:spawn(x, y, width, height, type)
     local class = enemyClass[type]
@@ -55,22 +69,21 @@ function enemies:update(dt)
         timer.log()
     end
 
-    enemies:destroy(dt)
+    enemies:destroy(dt, animationDurationInSeconds)
 
     for _, enemy in ipairs(enemies) do
         local ex, ey = enemy:getPosition()
         local pColliders = world:queryRectangleArea(ex + 20 * enemy.direction, ey + 30, 10, 2, {'platform'})
         local tColliders = world:queryRectangleArea(ex + 35 * enemy.direction, ey + 30, 10, 10, {'threshold'})
-        local playerColliders = world:queryRectangleArea(ex - 30, ey - 30, enemy.width, enemy.height, {'player'})
+        local playerColliders = world:queryRectangleArea(ex - 30, ey - 15, enemy.width, enemy.height - 15, {'player'})
+        local kColliders = world:queryRectangleArea(ex - 30, ey - 35, enemy.width, 2, {'player'})
 
         if #playerColliders > 0 then
             if not enemy.dead then
                 player:hurt()
             end
 
-            enemy.dead = true
-            enemy.speed = 0
-            enemy.animation = enemyClass[enemy.type].dying_animation
+            setDead(enemy, 'default', 2)
         end
 
         if #tColliders > 0 or #pColliders == 0 then
@@ -82,6 +95,10 @@ function enemies:update(dt)
                     print("enemy" .. enemy.id .. " direction: " .. enemy.direction)
                 end
             end
+        end
+
+        if #kColliders > 0 then
+            setDead(enemy, 'smash', 1)
         end
 
         enemy:setX(ex + enemy.speed * dt * enemy.direction)
@@ -96,10 +113,10 @@ function enemies:draw()
     end
 end
 
-function enemies:destroy(dt)
+function enemies:destroy(dt, waitTime)
     for i, enemy in ipairs(enemies) do
         if enemy.dead then
-            if timer.wait(dt, 2) then
+            if timer.wait(dt, waitTime) then
                 enemy:destroy()
                 table.remove(enemies, i)
             end

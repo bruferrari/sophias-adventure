@@ -17,7 +17,7 @@ function player:update(dt)
             py + 30,
             40,
             2,
-            {'platform'}
+            {'platform', 'enemy'}
         )
 
         if love.keyboard.isDown('left') then
@@ -38,11 +38,11 @@ function player:update(dt)
             end
         end
 
-        if #colliders > 0 then
-            player.jumping = false
-        else
+        if #colliders == 0 then
             player.jumping = true
             player.animation = animations.jumping
+        else
+            player.jumping = false
         end
     end
 

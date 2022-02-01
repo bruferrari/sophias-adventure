@@ -23,7 +23,7 @@ function love.load()
 
     world:addCollisionClass('player')
     world:addCollisionClass('platform')
-    world:addCollisionClass('danger')
+    world:addCollisionClass('enemy')
     world:addCollisionClass('threshold')
 
     cam = camera()
@@ -52,10 +52,15 @@ function love.load()
     animations.redEnemyWalking = anim8.newAnimation(enemyAnimGrid('2-6', 5), enemyAnimTime)
     animations.greenEnemyWalking = anim8.newAnimation(enemyAnimGrid('2-6', 7), enemyAnimTime)
 
-    local enemyDyingAnimTime = 0.40
+    local enemyDyingAnimTime = 0.50
     animations.blueEnemyDying = anim8.newAnimation(enemyAnimGrid('2-5', 2), enemyDyingAnimTime)
+    animations.blueEnemySmashed = anim8.newAnimation(enemyAnimGrid('4-6', 2), enemyDyingAnimTime)
+
     animations.redEnemyDying = anim8.newAnimation(enemyAnimGrid('2-5', 4), enemyDyingAnimTime)
+    animations.redEnemySmashed = anim8.newAnimation(enemyAnimGrid('4-6', 4), enemyDyingAnimTime)
+
     animations.greenEnemyDying = anim8.newAnimation(enemyAnimGrid('2-5', 6), enemyDyingAnimTime)
+    animations.greenEnemySmashed = anim8.newAnimation(enemyAnimGrid('4-6', 6), enemyDyingAnimTime)
 
     require('player')
     require('enemy')
