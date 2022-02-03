@@ -1,6 +1,4 @@
-local timer = require('utils/timer')
 local enemyFixtureCategory = 2
-local animationDurationInSeconds = 2
 
 enemies = {}
 
@@ -66,7 +64,8 @@ end
 function enemies:update(dt)
     if game.debugMode then
         print("player available lives: " .. player.lives)
-        timer.log()
+        local timerPool = timer:getPool()
+        timerPool:log()
     end
 
     enemies:destroy(dt)
@@ -116,10 +115,28 @@ end
 function enemies:destroy(dt)
     for i, enemy in ipairs(enemies) do
         if enemy.dead then
-            if timer.wait(dt, animationDurationInSeconds) then
-                enemy:destroy()
-                table.remove(enemies, i)
+            local pool = timer:getPool()
+            for _, t in ipairs(pool) do
+                t:wait(10)
             end
+
+            timer:schedule{
+                id = enemy.id,
+                ellapsed = 0,
+                running = false
+            }
+
+            -- local scheduled = timer:schedule{
+            --     id = enemy.id,
+            --     ellapsed = 10
+            -- }
+            -- print('timers: ' .. #timer:getTimers())
+            -- scheduled:log()
+
+            -- if scheduled:wait(animationDurationInSeconds) then
+            --     enemy:destroy()
+            --     table.remove(enemies, i)
+            -- end
         end
     end
 end

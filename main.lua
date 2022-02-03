@@ -2,6 +2,7 @@ wf = require('libs/windfield/windfield')
 anim8 = require('libs/anim8/anim8')
 sti = require('libs/Simple-Tiled-Implementation/sti')
 camera = require('libs/hump/camera')
+timer = require('utils/timer')
 
 sprites = {}
 animations = {}
@@ -82,6 +83,7 @@ function love.draw()
 end
 
 function love.update(dt)
+    timer:getPool():update(dt)
     world:update(dt)
     gameMap:update(dt)
     player:update(dt)
@@ -178,6 +180,7 @@ function destroyPlatforms()
 end
 
 function destroyEnemies()
+    timer:getPool():clear()
     for i, enemy in ipairs(enemies) do
         enemy:destroy()
         table.remove(enemies, i)
