@@ -26,6 +26,14 @@ function Pool:update(dt)
     end
 end
 
+function Pool:find(timer)
+    for i, t in ipairs(Pool) do
+        if t.id == timer.id then
+            return i
+        end
+    end
+end
+
 function Timer:new(t)
     t = t or {
         id = nil,
@@ -59,6 +67,24 @@ function Timer:wait(seconds)
         return true
     end
     return false
+end
+
+function Timer:executeAfter(seconds, fn, loop)
+    loop = loop or false
+
+    if self.ellapsed > seconds then
+        fn()
+        if loop then
+            self:reset()
+        else
+            local index = Pool:find(self)
+            table.remove(Pool, index)
+        end
+    end
+end
+
+function Timer:repeatEach(seconds, fn)
+    self:executeAfter(seconds, fn, true)
 end
 
 function Timer:update(dt)

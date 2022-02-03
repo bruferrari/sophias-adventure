@@ -117,7 +117,8 @@ function enemies:destroy(dt)
         if enemy.dead then
             local pool = timer:getPool()
             for _, t in ipairs(pool) do
-                t:wait(10)
+                -- t:wait(10)
+                t:executeAfter(2, function() print('finished') end)
             end
 
             timer:schedule{
