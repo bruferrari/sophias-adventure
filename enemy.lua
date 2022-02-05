@@ -33,7 +33,11 @@ local function setDead(enemy, deathType, animDuration)
     local smashDeathAnim = enemyClass[enemy.type].smash_animation
     local defaultDeathAnim = enemyClass[enemy.type].dying_animation
 
-    animationDurationInSeconds = animDuration
+    timer:schedule{
+        id = enemy.id,
+        ellapsed = 0
+    }
+
     enemy.dead = true
     enemy.speed = 0
     enemy.animation = deathType == 'smash' and smashDeathAnim or defaultDeathAnim
@@ -112,32 +116,20 @@ function enemies:draw()
     end
 end
 
+local onAnimationFinish = function(enemy)
+    -- todo: impl
+end
+
 function enemies:destroy(dt)
     for i, enemy in ipairs(enemies) do
         if enemy.dead then
             local pool = timer:getPool()
             for _, t in ipairs(pool) do
-                -- t:wait(10)
-                t:executeAfter(2, function() print('finished') end)
+                t:executeAfter(2, function()
+                    enemy:destroy()
+                    table.remove(enemies, i)
+                end)
             end
-
-            timer:schedule{
-                id = enemy.id,
-                ellapsed = 0,
-                running = false
-            }
-
-            -- local scheduled = timer:schedule{
-            --     id = enemy.id,
-            --     ellapsed = 10
-            -- }
-            -- print('timers: ' .. #timer:getTimers())
-            -- scheduled:log()
-
-            -- if scheduled:wait(animationDurationInSeconds) then
-            --     enemy:destroy()
-            --     table.remove(enemies, i)
-            -- end
         end
     end
 end

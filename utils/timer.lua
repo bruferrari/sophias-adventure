@@ -1,14 +1,18 @@
 local Timer = {
     id = nil,
-    ellapsed = 0,
-    running = false
+    ellapsed = 0
 }
 
 local Pool = {}
 
 function Pool:log()
-    for _, t in ipairs(self) do
-        print("id: " .. tostring(t.id) .. " timer: " .. t.ellapsed)
+    if #Pool > 0 then
+        for _, t in ipairs(self) do
+            print("pool: " .. #Pool .. " timers scheduled")
+            print("id: " .. tostring(t.id) .. " timer: " .. t.ellapsed)
+        end
+    else
+        print("pool: no timers scheduled")
     end
 end
 
@@ -28,9 +32,7 @@ end
 
 function Pool:find(timer)
     for i, t in ipairs(Pool) do
-        if t.id == timer.id then
-            return i
-        end
+        return t.id == timer.id and i or -1
     end
 end
 
@@ -69,16 +71,18 @@ function Timer:wait(seconds)
     return false
 end
 
-function Timer:executeAfter(seconds, fn, loop)
+function Timer:executeAfter(seconds, closure, loop)
     loop = loop or false
 
     if self.ellapsed > seconds then
-        fn()
+        closure()
         if loop then
             self:reset()
         else
             local index = Pool:find(self)
-            table.remove(Pool, index)
+            if index > 0 then
+                table.remove(Pool, index)
+            end
         end
     end
 end
