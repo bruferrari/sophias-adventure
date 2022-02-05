@@ -116,21 +116,21 @@ function enemies:draw()
     end
 end
 
-local onAnimationFinish = function(enemy)
-    -- todo: impl
+local animationFinishedCallback = function(enemy, index)
+    enemy:destroy()
+    table.remove(enemies, index)
 end
 
 function enemies:destroy(dt)
     for i, enemy in ipairs(enemies) do
-        local destroyEnemy = function()
-            enemy:destroy()
-            table.remove(enemies, i)
+        local onAnimationFinish = function()
+            animationFinishedCallback(enemy, i)
         end
 
         if enemy.dead then
             local pool = timer:getPool()
             for _, t in ipairs(pool) do
-                t:executeAfter(2, destroyEnemy)
+                t:executeAfter(2, onAnimationFinish)
             end
         end
     end
