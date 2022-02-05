@@ -122,13 +122,15 @@ end
 
 function enemies:destroy(dt)
     for i, enemy in ipairs(enemies) do
+        local destroyEnemy = function()
+            enemy:destroy()
+            table.remove(enemies, i)
+        end
+
         if enemy.dead then
             local pool = timer:getPool()
             for _, t in ipairs(pool) do
-                t:executeAfter(2, function()
-                    enemy:destroy()
-                    table.remove(enemies, i)
-                end)
+                t:executeAfter(2, destroyEnemy)
             end
         end
     end
