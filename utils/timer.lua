@@ -1,6 +1,7 @@
 local Timer = {
     id = nil,
-    ellapsed = 0
+    ellapsed = 0,
+    limit = nil
 }
 
 local Pool = {}

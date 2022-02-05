@@ -29,13 +29,19 @@ local enemyClass = {
     }
 }
 
-local function setDead(enemy, deathType, animDuration)
+local enemyDyingAnimTime = {
+    ['smash'] = 1,
+    ['default'] = 2
+}
+
+local function setDead(enemy, deathType)
     local smashDeathAnim = enemyClass[enemy.type].smash_animation
     local defaultDeathAnim = enemyClass[enemy.type].dying_animation
 
     timer:schedule{
         id = enemy.id,
-        ellapsed = 0
+        ellapsed = 0,
+        limit = deathType == 'smash' and enemyDyingAnimTime['smash'] or enemyDyingAnimTime['default']
     }
 
     enemy.dead = true
@@ -86,7 +92,7 @@ function enemies:update(dt)
                 player:hurt()
             end
 
-            setDead(enemy, 'default', 2)
+            setDead(enemy, 'default')
         end
 
         if #tColliders > 0 or #pColliders == 0 then
@@ -101,7 +107,7 @@ function enemies:update(dt)
         end
 
         if #kColliders > 0 then
-            setDead(enemy, 'smash', 1)
+            setDead(enemy, 'smash')
         end
 
         enemy:setX(ex + enemy.speed * dt * enemy.direction)
@@ -130,7 +136,7 @@ function enemies:destroy(dt)
         if enemy.dead then
             local pool = timer:getPool()
             for _, t in ipairs(pool) do
-                t:executeAfter(2, onAnimationFinish)
+                t:executeAfter(t.limit, onAnimationFinish)
             end
         end
     end
