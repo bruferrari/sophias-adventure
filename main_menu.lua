@@ -44,6 +44,7 @@ function Menu:draw()
     local rect_w, rect_h = 300, 100
     local h_center = love.graphics.getWidth() / 2
     local xOffset = rect_w / 2
+    local mouse_first = 1
 
     for _, key in ipairs(Menu) do
         local color = {0, 0, 0, 0.38}
@@ -56,8 +57,17 @@ function Menu:draw()
                       mouse_y > rect_y and mouse_y < rect_y + rect_h
 
         if hover then
-            print('hovering: ' .. item.displayName)
             color = {0.5, 0.5, 0.5, 0.38}
+
+            if love.mouse.isDown(mouse_first) then
+                if key == 'quit' then
+                    love.event.quit()
+                elseif key == 'play' then
+                    print('play clicked!')
+                elseif key == 'settings' then
+                    print('settings clicked')
+                end
+            end
         end
 
         love.graphics.setColor(unpack(color))
