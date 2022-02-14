@@ -9,15 +9,17 @@ animations = {}
 platforms = {}
 thresholds = {}
 game = {
+    state = 0,
     width = 1024,
     height = 768,
-    debugMode = true,
+    debugMode = false,
     currentMap = 'level_one'
 }
 
 function love.load()
     love.window.setMode(game.width, game.height)
     love.window.setTitle("Sophia's Adventure")
+    font = love.graphics.newFont(30)
     world = wf.newWorld(0, 800, false)
 
     world:setQueryDebugDrawing(true)
@@ -26,6 +28,7 @@ function love.load()
     world:addCollisionClass('platform')
     world:addCollisionClass('enemy')
     world:addCollisionClass('threshold')
+    world:addCollisionClass('menu_item')
 
     cam = camera()
 
@@ -63,8 +66,11 @@ function love.load()
     animations.greenEnemyDying = anim8.newAnimation(enemyAnimGrid('2-5', 6), enemyDyingAnimTime)
     animations.greenEnemySmashed = anim8.newAnimation(enemyAnimGrid('4-6', 6), enemyDyingAnimTime)
 
+    require('main_menu')
     require('player')
     require('enemy')
+
+    Menu:load()
 
     loadMap('level_one')
 end
@@ -80,6 +86,9 @@ function love.draw()
     player:draw()
     enemies:draw()
     cam:detach()
+    if game.state == 0 then
+        Menu:draw()
+    end
 end
 
 function love.update(dt)
@@ -125,6 +134,15 @@ function love.keypressed(key)
 
     if key == 'g' then
         game.debugMode = not game.debugMode
+    end
+end
+
+function love.mousepressed(x, y, button)
+    if button == 1 then
+        local mouseColliders = world:queryCircleArea(x, y, 30, { collision_class='menu_item' })
+        if #mouseColliders > 0 then
+            print('MENU ITEM CLICKED!')
+        end
     end
 end
 
