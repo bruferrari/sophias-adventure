@@ -44,9 +44,9 @@ function Menu:draw()
     local rect_w, rect_h = 300, 100
     local h_center = love.graphics.getWidth() / 2
     local xOffset = rect_w / 2
-    local color = {0, 0, 0, 0.38}
 
     for _, key in ipairs(Menu) do
+        local color = {0, 0, 0, 0.38}
         local rect_x, rect_y = h_center - xOffset, y + yOffset
         local text_x, text_y = x, y + yOffset + 35
         local item = itemData[key]
@@ -57,7 +57,7 @@ function Menu:draw()
 
         if hover then
             print('hovering: ' .. item.displayName)
-            color = {150, 150, 150, 0.38}
+            color = {0.5, 0.5, 0.5, 0.38}
         end
 
         love.graphics.setColor(unpack(color))
