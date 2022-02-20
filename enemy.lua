@@ -41,7 +41,7 @@ local function setDead(enemy, deathType)
     timer:schedule{
         id = enemy.id,
         ellapsed = 0,
-        limit = deathType == 'smash' and enemyDyingAnimTime['smash'] or enemyDyingAnimTime['default']
+        limit = enemyDyingAnimTime[deathType]
     }
 
     enemy.dead = true

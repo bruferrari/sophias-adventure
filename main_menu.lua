@@ -75,7 +75,14 @@ function Menu:draw()
         love.graphics.setColor(r, g, b, a)
         love.graphics.printf(item.displayName, text_x, text_y, love.graphics.getWidth(), 'center')
 
-        print('mouse x: ' .. mouse_x .. ' mouse y: ' .. mouse_y .. ' item x: ' .. item.x .. ' item y ' .. item.y)
+        if Game.debugMode then
+            print(
+                'mouse x: ' .. mouse_x ..
+                ' mouse y: ' .. mouse_y ..
+                ' item x: ' .. item.x ..
+                ' item y ' .. item.y
+                )
+        end
 
         yOffset = yOffset + 110
     end

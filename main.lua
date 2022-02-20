@@ -17,7 +17,7 @@ State = {
 Game = {
     width = 1024,
     height = 768,
-    debugMode = false,
+    debugMode = true,
     currentMap = 'level_one',
     current_state = State['playing']
 }
