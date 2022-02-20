@@ -63,7 +63,7 @@ function Menu:draw()
                 if key == 'quit' then
                     love.event.quit()
                 elseif key == 'play' then
-                    print('play clicked!')
+                    Game.current_state = State['playing']
                 elseif key == 'settings' then
                     print('settings clicked')
                 end

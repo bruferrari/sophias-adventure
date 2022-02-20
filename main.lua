@@ -8,17 +8,22 @@ Animations = {}
 Sprites = {}
 local platforms = {}
 local thresholds = {}
-local game_state = {
+
+State = {
     ['playing'] = 0,
     ['paused'] = 1
 }
 
 Game = {
-    state = game_state['playing'],
     width = 1024,
     height = 768,
     debugMode = false,
-    currentMap = 'level_one'
+    currentMap = 'level_one',
+    state = {
+        ['playing'] = 0,
+        ['paused'] = 1
+    },
+    current_state = State['playing']
 }
 
 function love.load()
@@ -94,7 +99,7 @@ function love.draw()
     enemies:draw()
     cam:detach()
 
-    if Game.state == game_state['paused'] then
+    if Game.current_state == State['paused'] then
         Menu:draw()
     end
 end
@@ -103,7 +108,7 @@ function love.update(dt)
     world:update(dt)
     gameMap:update(dt)
 
-    if Game.state == game_state['playing'] then
+    if Game.current_state == State['playing'] then
         timer:getPool():update(dt)
         player:update(dt)
         enemies:update(dt)
@@ -134,10 +139,10 @@ end
 
 function love.keypressed(key)
     if key == 'escape' then
-        if Game.state == game_state['playing'] then
-            Game.state = game_state['paused']
-        elseif Game.state == game_state['paused'] then
-            Game.state = game_state['playing']
+        if Game.current_state == State['playing'] then
+            Game.current_state = State['paused']
+        elseif Game.current_state == State['paused'] then
+            Game.current_state = State['playing']
         end
     end
 
