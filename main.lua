@@ -19,10 +19,6 @@ Game = {
     height = 768,
     debugMode = false,
     currentMap = 'level_one',
-    state = {
-        ['playing'] = 0,
-        ['paused'] = 1
-    },
     current_state = State['playing']
 }
 
