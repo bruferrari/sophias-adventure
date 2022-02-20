@@ -4,12 +4,17 @@ sti = require('libs/Simple-Tiled-Implementation/sti')
 camera = require('libs/hump/camera')
 timer = require('utils/timer')
 
-sprites = {}
-animations = {}
-platforms = {}
-thresholds = {}
-game = {
-    state = 0,
+Animations = {}
+Sprites = {}
+local platforms = {}
+local thresholds = {}
+local game_state = {
+    ['playing'] = 0,
+    ['paused'] = 1
+}
+
+Game = {
+    state = game_state['playing'],
     width = 1024,
     height = 768,
     debugMode = false,
@@ -17,7 +22,7 @@ game = {
 }
 
 function love.load()
-    love.window.setMode(game.width, game.height)
+    love.window.setMode(Game.width, Game.height)
     love.window.setTitle("Sophia's Adventure")
     font = love.graphics.newFont(30)
     world = wf.newWorld(0, 800, false)
@@ -32,39 +37,39 @@ function love.load()
 
     cam = camera()
 
-    sprites.player = love.graphics.newImage('sprites/baby-running.png')
-    sprites.nightBg = love.graphics.newImage('sprites/night_bg.png')
-    sprites.forestBg = love.graphics.newImage('sprites/forest_bg.png')
-    sprites.enemies = love.graphics.newImage('sprites/enemies.png')
-    sprites.heart = love.graphics.newImage('sprites/heart.png')
+    Sprites.player = love.graphics.newImage('sprites/baby-running.png')
+    Sprites.nightBg = love.graphics.newImage('sprites/night_bg.png')
+    Sprites.forestBg = love.graphics.newImage('sprites/forest_bg.png')
+    Sprites.enemies = love.graphics.newImage('sprites/enemies.png')
+    Sprites.heart = love.graphics.newImage('sprites/heart.png')
 
-    sprites.enemies:setFilter('nearest')
+    Sprites.enemies:setFilter('nearest')
 
-    local playerAnimGrid = anim8.newGrid(228, 278, sprites.player:getWidth(), sprites.player:getHeight())
-    local enemyAnimGrid = anim8.newGrid(16, 16, sprites.enemies:getWidth(), sprites.enemies:getHeight())
+    local playerAnimGrid = anim8.newGrid(228, 278, Sprites.player:getWidth(), Sprites.player:getHeight())
+    local enemyAnimGrid = anim8.newGrid(16, 16, Sprites.enemies:getWidth(), Sprites.enemies:getHeight())
 
     local playerAnimTime = 0.25
     local playerCelbAnimTime = 0.15
 
-    animations.walking = anim8.newAnimation(playerAnimGrid('1-4', 4), playerAnimTime)
-    animations.idle = anim8.newAnimation(playerAnimGrid('1-1', 4), playerAnimTime)
-    animations.jumping = anim8.newAnimation(playerAnimGrid('4-4', 4), playerAnimTime)
-    animations.celebrating = anim8.newAnimation(playerAnimGrid('2-4', 1), playerCelbAnimTime)
+    Animations.walking = anim8.newAnimation(playerAnimGrid('1-4', 4), playerAnimTime)
+    Animations.idle = anim8.newAnimation(playerAnimGrid('1-1', 4), playerAnimTime)
+    Animations.jumping = anim8.newAnimation(playerAnimGrid('4-4', 4), playerAnimTime)
+    Animations.celebrating = anim8.newAnimation(playerAnimGrid('2-4', 1), playerCelbAnimTime)
 
     local enemyAnimTime = 0.08
-    animations.blueEnemyWalking = anim8.newAnimation(enemyAnimGrid('2-6', 3), enemyAnimTime)
-    animations.redEnemyWalking = anim8.newAnimation(enemyAnimGrid('2-6', 5), enemyAnimTime)
-    animations.greenEnemyWalking = anim8.newAnimation(enemyAnimGrid('2-6', 7), enemyAnimTime)
+    Animations.blueEnemyWalking = anim8.newAnimation(enemyAnimGrid('2-6', 3), enemyAnimTime)
+    Animations.redEnemyWalking = anim8.newAnimation(enemyAnimGrid('2-6', 5), enemyAnimTime)
+    Animations.greenEnemyWalking = anim8.newAnimation(enemyAnimGrid('2-6', 7), enemyAnimTime)
 
     local enemyDyingAnimTime = 0.50
-    animations.blueEnemyDying = anim8.newAnimation(enemyAnimGrid('2-5', 2), enemyDyingAnimTime)
-    animations.blueEnemySmashed = anim8.newAnimation(enemyAnimGrid('4-6', 2), enemyDyingAnimTime)
+    Animations.blueEnemyDying = anim8.newAnimation(enemyAnimGrid('2-5', 2), enemyDyingAnimTime)
+    Animations.blueEnemySmashed = anim8.newAnimation(enemyAnimGrid('4-6', 2), enemyDyingAnimTime)
 
-    animations.redEnemyDying = anim8.newAnimation(enemyAnimGrid('2-5', 4), enemyDyingAnimTime)
-    animations.redEnemySmashed = anim8.newAnimation(enemyAnimGrid('4-6', 4), enemyDyingAnimTime)
+    Animations.redEnemyDying = anim8.newAnimation(enemyAnimGrid('2-5', 4), enemyDyingAnimTime)
+    Animations.redEnemySmashed = anim8.newAnimation(enemyAnimGrid('4-6', 4), enemyDyingAnimTime)
 
-    animations.greenEnemyDying = anim8.newAnimation(enemyAnimGrid('2-5', 6), enemyDyingAnimTime)
-    animations.greenEnemySmashed = anim8.newAnimation(enemyAnimGrid('4-6', 6), enemyDyingAnimTime)
+    Animations.greenEnemyDying = anim8.newAnimation(enemyAnimGrid('2-5', 6), enemyDyingAnimTime)
+    Animations.greenEnemySmashed = anim8.newAnimation(enemyAnimGrid('4-6', 6), enemyDyingAnimTime)
 
     require('main_menu')
     require('player')
@@ -76,29 +81,35 @@ function love.load()
 end
 
 function love.draw()
-    love.graphics.draw(sprites.forestBg, 0, 0, 0, 0.55, 0.55)
+    love.graphics.draw(Sprites.forestBg, 0, 0, 0, 0.55, 0.55)
     player:drawLives()
     cam:attach()
-    if game.debugMode then
+
+    if Game.debugMode then
         world:draw()
     end
+
     gameMap:drawLayer(gameMap.layers['Tile Layer 1'])
     player:draw()
     enemies:draw()
     cam:detach()
-    if game.state == 0 then
+
+    if Game.state == game_state['paused'] then
         Menu:draw()
     end
 end
 
 function love.update(dt)
-    timer:getPool():update(dt)
     world:update(dt)
     gameMap:update(dt)
-    player:update(dt)
-    enemies:update(dt)
 
-    if game.debugMode then
+    if Game.state == game_state['playing'] then
+        timer:getPool():update(dt)
+        player:update(dt)
+        enemies:update(dt)
+    end
+
+    if Game.debugMode then
         displayDebugInfo()
     end
 
@@ -123,7 +134,11 @@ end
 
 function love.keypressed(key)
     if key == 'escape' then
-        love.event.quit()
+        if Game.state == game_state['playing'] then
+            Game.state = game_state['paused']
+        elseif Game.state == game_state['paused'] then
+            Game.state = game_state['playing']
+        end
     end
 
     if key == 'up' then
@@ -133,16 +148,7 @@ function love.keypressed(key)
     end
 
     if key == 'g' then
-        game.debugMode = not game.debugMode
-    end
-end
-
-function love.mousepressed(x, y, button)
-    if button == 1 then
-        local mouseColliders = world:queryCircleArea(x, y, 30, { collision_class='menu_item' })
-        if #mouseColliders > 0 then
-            print('MENU ITEM CLICKED!')
-        end
+        Game.debugMode = not Game.debugMode
     end
 end
 
@@ -185,7 +191,7 @@ end
 function resetMap()
     destroyPlatforms()
     destroyEnemies()
-    loadMap(game.currentMap)
+    loadMap(Game.currentMap)
     player:setPosition(360, 100)
     player.lives = 3
 end
