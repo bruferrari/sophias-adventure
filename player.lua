@@ -50,13 +50,17 @@ function player:update(dt)
     player.animation:update(dt)
 end
 
+local function playerDrawAnim(px, py)
+    player.animation:draw(Sprites.player, px, py, nil, 0.25 * player.direction, 0.25, 100, 150)
+end
+
 function player:draw()
     local px, py = player:getPosition()
     if player.hurtingFrames == 0 then
-        player.animation:draw(Sprites.player, px, py, nil, 0.25 * player.direction, 0.25, 100, 150)
+        playerDrawAnim(px, py)
     elseif player.hurtingFrames > 0 then
         if math.fmod(player.hurtingFrames, 4) ~= 0 then
-            player.animation:draw(Sprites.player, px, py, nil, 0.25 * player.direction, 0.25, 100, 150)
+            playerDrawAnim(px, py)
         end
         player.hurtingFrames = player.hurtingFrames - 1
     end
