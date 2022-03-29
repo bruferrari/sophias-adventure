@@ -56,14 +56,16 @@ end
 
 function player:draw()
     local px, py = player:getPosition()
-    if player.hurtingFrames == 0 then
-        playerDrawAnim(px, py)
-    elseif player.hurtingFrames > 0 then
+
+    if player.hurtingFrames > 0 then
         if math.fmod(player.hurtingFrames, 4) ~= 0 then
             playerDrawAnim(px, py)
         end
         player.hurtingFrames = player.hurtingFrames - 1
+    else
+        playerDrawAnim(px, py)
     end
+
 end
 
 function player:hurt()
