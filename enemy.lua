@@ -6,25 +6,25 @@ local enemyClass = {
     ['blue'] = {
         type = 'blue',
         speed = 100,
-        animation = Animations.blueEnemyWalking,
-        dying_animation = Animations.blueEnemyDying,
-        smash_animation = Animations.blueEnemySmashed,
+        animation = animations.blueEnemyWalking,
+        dying_animation = animations.blueEnemyDying,
+        smash_animation = animations.blueEnemySmashed,
         collision_classes = {collision_class = 'enemy'}
     },
     ['red'] = {
         type = 'red',
         speed = 200,
-        animation = Animations.redEnemyWalking,
-        dying_animation = Animations.redEnemyDying,
-        smash_animation = Animations.redEnemySmashed,
+        animation = animations.redEnemyWalking,
+        dying_animation = animations.redEnemyDying,
+        smash_animation = animations.redEnemySmashed,
         collision_classes = {collision_class = 'enemy'}
     },
     ['green'] = {
         type = 'green',
         speed = 75,
-        animation = Animations.greenEnemyWalking,
-        dying_animation = Animations.greenEnemyDying,
-        smash_animation = Animations.greenEnemySmashed,
+        animation = animations.greenEnemyWalking,
+        dying_animation = animations.greenEnemyDying,
+        smash_animation = animations.greenEnemySmashed,
         collision_classes = {collision_class = 'enemy'}
     }
 }
@@ -41,7 +41,7 @@ local function setDead(enemy, deathType)
     timer:schedule{
         id = enemy.id,
         ellapsed = 0,
-        limit = enemyDyingAnimTime[deathType]
+        limit = deathType == 'smash' and enemyDyingAnimTime['smash'] or enemyDyingAnimTime['default']
     }
 
     enemy.dead = true
@@ -72,7 +72,7 @@ function enemies:spawn(x, y, width, height, type)
 end
 
 function enemies:update(dt)
-    if Game.debugMode then
+    if game.debugMode then
         print("player available lives: " .. player.lives)
         local timerPool = timer:getPool()
         timerPool:log()
@@ -99,7 +99,7 @@ function enemies:update(dt)
             local oldDirection = enemy.direction
             enemy.direction = enemy.direction * -1
 
-            if Game.debugMode then
+            if game.debugMode then
                 if oldDirection ~= enemy.direction then
                     print("enemy" .. enemy.id .. " direction: " .. enemy.direction)
                 end
@@ -118,7 +118,7 @@ end
 function enemies:draw()
     for _, enemy in ipairs(enemies) do
         local ex, ey = enemy:getPosition()
-        enemy.animation:draw(Sprites.enemies, ex, ey, nil, 4 * enemy.direction * -1, 4, 8, 7.5)
+        enemy.animation:draw(sprites.enemies, ex, ey, nil, 4 * enemy.direction * -1, 4, 8, 7.5)
     end
 end
 
