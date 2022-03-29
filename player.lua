@@ -6,6 +6,7 @@ player.direction = 1
 player.jumping = false
 player.celebrating = false
 player.animation = Animations.idle
+player.hurtingFrames = 0
 
 function player:update(dt)
     player.animation = Animations.idle
@@ -51,10 +52,18 @@ end
 
 function player:draw()
     local px, py = player:getPosition()
-    player.animation:draw(Sprites.player, px, py, nil, 0.25 * player.direction, 0.25, 100, 150)
+    if player.hurtingFrames == 0 then
+        player.animation:draw(Sprites.player, px, py, nil, 0.25 * player.direction, 0.25, 100, 150)
+    elseif player.hurtingFrames > 0 then
+        if math.fmod(player.hurtingFrames, 4) ~= 0 then
+            player.animation:draw(Sprites.player, px, py, nil, 0.25 * player.direction, 0.25, 100, 150)
+        end
+        player.hurtingFrames = player.hurtingFrames - 1
+    end
 end
 
 function player:hurt()
+    player.hurtingFrames = 120
     player.lives = player.lives - 1
 end
 
