@@ -1,6 +1,4 @@
-local timer = require('utils/timer')
 local enemyFixtureCategory = 2
-local animationDurationInSeconds = 2
 
 enemies = {}
 
@@ -31,11 +29,21 @@ local enemyClass = {
     }
 }
 
-local function setDead(enemy, deathType, animDuration)
+local enemyDyingAnimTime = {
+    ['smash'] = 1,
+    ['default'] = 2
+}
+
+local function setDead(enemy, deathType)
     local smashDeathAnim = enemyClass[enemy.type].smash_animation
     local defaultDeathAnim = enemyClass[enemy.type].dying_animation
 
-    animationDurationInSeconds = animDuration
+    timer:schedule{
+        id = enemy.id,
+        ellapsed = 0,
+        limit = deathType == 'smash' and enemyDyingAnimTime['smash'] or enemyDyingAnimTime['default']
+    }
+
     enemy.dead = true
     enemy.speed = 0
     enemy.animation = deathType == 'smash' and smashDeathAnim or defaultDeathAnim
@@ -66,7 +74,8 @@ end
 function enemies:update(dt)
     if game.debugMode then
         print("player available lives: " .. player.lives)
-        timer.log()
+        local timerPool = timer:getPool()
+        timerPool:log()
     end
 
     enemies:destroy(dt)
@@ -83,7 +92,7 @@ function enemies:update(dt)
                 player:hurt()
             end
 
-            setDead(enemy, 'default', 2)
+            setDead(enemy, 'default')
         end
 
         if #tColliders > 0 or #pColliders == 0 then
@@ -98,7 +107,7 @@ function enemies:update(dt)
         end
 
         if #kColliders > 0 then
-            setDead(enemy, 'smash', 1)
+            setDead(enemy, 'smash')
         end
 
         enemy:setX(ex + enemy.speed * dt * enemy.direction)
@@ -113,12 +122,21 @@ function enemies:draw()
     end
 end
 
+local animationFinishedCallback = function(enemy, index)
+    enemy:destroy()
+    table.remove(enemies, index)
+end
+
 function enemies:destroy(dt)
     for i, enemy in ipairs(enemies) do
+        local onAnimationFinish = function()
+            animationFinishedCallback(enemy, i)
+        end
+
         if enemy.dead then
-            if timer.wait(dt, animationDurationInSeconds) then
-                enemy:destroy()
-                table.remove(enemies, i)
+            local pool = timer:getPool()
+            for _, t in ipairs(pool) do
+                t:executeAfter(t.limit, onAnimationFinish)
             end
         end
     end
